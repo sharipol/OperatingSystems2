@@ -1,0 +1,3 @@
+[submodule "linux-yocto"]
+	path = linux-yocto
+	url = http://git.yoctoproject.org/cgit.cgi/linux-yocto/
