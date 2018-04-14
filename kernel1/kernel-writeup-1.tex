@@ -153,27 +153,27 @@
 	\textit{qemu-system-i386 -gdb tcp::5517 -S -nographic -kernel ./arch/x86/boot/bzImage -drive file=../core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"}. 
 	\begin{itemize}
 		\item \textbf{-gdb tcp::5517} \\
-		Wait for a gdb connection on TCP port 5517.
+		Wait for a gdb connection on TCP port 5517 \cite{qemu-command-flags}.
 		\item \textbf{-S} \\
-		Do not start CPU at startup.	
+		Do not start CPU at startup \cite{qemu-command-flags}.	
 		\item \textbf{-nographic} \\
-		Disable graphical output so as to provide only a command line interface.
+		Disable graphical output so as to provide only a command line interface \cite{qemu-command-flags}.
 		\item \textbf{-kernel ./arch/x86/boot/bzImage} \\
-		Use ./arch/x86/boot/bzImage as the kernel image.	
+		Use ./arch/x86/boot/bzImage as the kernel image \cite{qemu-command-flags}.	
 		\item \textbf{-drive file=../core-image-lsb-sdk-qemux86.ext4,if=virtio} \\
-		Create a new drive using the disk image ../core-image-lsb-sdk-qemux86.ext4 and associate it with a virtio interface.
+		Create a new drive using the disk image ../core-image-lsb-sdk-qemux86.ext4 and associate it with a virtio interface \cite{qemu-command-flags}.
 		\item \textbf{-enable-kvm} \\
-		Enable support for KVM full virtualization.
+		Enable support for KVM full virtualization \cite{qemu-command-flags}.
 		\item \textbf{-net none} \\
-		Do not configure any network devices for the VM.
+		Do not configure any network devices for the VM \cite{qemu-command-flags}.
 		\item \textbf{-usb} \\
-		Enable the USB driver.	
+		Enable the USB driver \cite{qemu-command-flags}.	
 		\item \textbf{-localtime} \\
-		Use localtime to set the real-time clock.
+		Use localtime to set the real-time clock \cite{qemu-command-flags}.
 		\item \textbf{--no-reboot} \\ 
-		Do not allow reboot, exit instead.
+		Do not allow reboot, exit instead \cite{qemu-command-flags}.
 		\item \textbf{--append "root=/dev/vda/rw console=ttyS0 debug"} \\
-		Add "root=/dev/vda/rw console=ttyS0 debug" to command line configuration in VM.
+		Add "root=/dev/vda/rw console=ttyS0 debug" to command line configuration in VM \cite{qemu-command-flags}.
 	\end{itemize}
 
 \section{Questions About Assignment}
@@ -230,8 +230,9 @@
 		\hline
 	\end{tabular}
 \end{center}
- 
-%\bibliographystyle{IEEEtran}
-%\bibliography{references}
+
+\bibdata{}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
 
 \end{document}
