@@ -21,6 +21,7 @@
 \usepackage{setspace}
 \usepackage{xspace}
 \usepackage{array}
+\usepackage{hyperref}
 \usepackage{etoolbox}
 \AtBeginEnvironment{quote}{\singlespacing\vspace{-\topsep}\small}
 
@@ -187,7 +188,7 @@
 			In doing this, we were able to better understand how the commands given in the instructions fit together and what role each command played in the overall process of running the kernel.
 			Once we had this understanding, we were able to execute the instructions properly and complete the assignment.
 		\item How did you ensure your solution was correct? \\
-			TODO
+			The solution was deemed to be correct by the fact that after following the steps that we came up with, we found ourselves on a Linux command line within the VM.			
 		\item What did you learn? \\
 			Throughout the course of this assignment we learned:
 			\begin{itemize}
@@ -205,8 +206,14 @@
 	\end{enumerate}
 
 \section{Version Control Log}
-	TODO
- 
+	\begin{tabular}{|p{5cm}|p{5cm}|p{5cm}|}
+		\hline
+		\textbf{Commit} & \textbf{Author} & \textbf{Description}\\
+		\hline
+		\textcolor{blue}{\underline{\href[pdfnewwindow=true]{https://github.com/AustinRow1/OperatingSystems2/commit/a16450931755558a70be019c26f54b8a1c2c63d1}{a164509}}} & AustinRow1 & Added linux-yocto as submodule. Added necessary image and environment setup files. Added script to automatically build and run kernel. Added directory for first assignment and completed most of the writeup for first assignment.\\\hline
+		\textcolor{blue}{\underline{\href[pdfnewwindow=true]{https://github.com/AustinRow1/OperatingSystems2/commit/41ff2f23ebb0a8e9ab44df4e0ff71790bc135c44}{41ff2f2}}} & AustinRow1 & Changed linux-yocto submodule to v3.19.2 tag.\\\hline
+	\end{tabular}
+
 \section{Work Log}
 \begin{center}
 	\begin{tabular}{ |p{2cm}|p{12cm}| }

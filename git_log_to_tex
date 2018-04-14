@@ -1,0 +1,12 @@
+#!/bin/bash
+# Find remote URL for hashes (designed for GitHub-hosted projects)
+base="https://github.com/AustinRow1/OperatingSystems2"
+
+# Output LaTeX table in chronological order
+echo "\\begin{tabular}{|p{5cm}|p{5cm}|p{5cm}|}"
+echo "\\hline"
+echo "\\textbf{Commit} & \\textbf{Author} & \\textbf{Description}\\\\"
+echo "\\hline"
+git log --pretty=format:"\\textcolor{blue}{\\underline{\\href[pdfnewwindow=true]{$base/commit/%H}{%h}}} & %an & %s\\\\\\hline" --reverse
+echo "\\end{tabular}"
+echo "" 
