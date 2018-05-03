@@ -18,7 +18,8 @@ echo -e "\ttarget remote :$port_num"
 echo -e "\tcontinue"
 echo -e "******************************************************************\n"
 
-echo "qemu-system-i386 -gdb tcp::$port_num -S -nographic -kernel ./arch/x86/boot/bzImage -drive file=../core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append \"root=/dev/vda rw console=ttyS0 debug\""
+#echo "qemu-system-i386 -gdb tcp::$port_num -S -nographic -kernel ./arch/x86/boot/bzImage -drive file=../core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append \"root=/dev/vda rw console=ttyS0 debug\""
+echo "qemu-system-i386 -gdb tcp::$port_num -S -nographic -kernel ./arch/x86/boot/bzImage -drive file=/scratch/spring2018/17/core-image-lsb-sdk-qemux86.ext4 -enable-kvm -net none -usb -localtime --no-reboot --append \"root=/dev/hda rw console=ttyS0 elevator=look\""
 
 #Comment out the line below if you only want to build the kernel but not run it in the VM.
-qemu-system-i386 -gdb tcp::$port_num -S -nographic -kernel ./arch/x86/boot/bzImage -drive file=../core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+qemu-system-i386 -gdb tcp::$port_num -S -nographic -kernel ./arch/x86/boot/bzImage -drive file=/scratch/spring2018/17/core-image-lsb-sdk-qemux86.ext4 -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/hda rw console=ttyS0 elevator=look"
