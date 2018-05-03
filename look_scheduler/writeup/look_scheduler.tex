@@ -1,0 +1,217 @@
+\documentclass[onecolumn,draftclsnofoot, 10pt, compsoc]{IEEEtran}
+
+\usepackage{graphicx}
+\usepackage[section]{placeins}
+\usepackage{caption}
+
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{xspace}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{etoolbox}
+\AtBeginEnvironment{quote}{\singlespacing\vspace{-\topsep}\small}
+
+%input{pygments.tex}
+
+\usepackage{geometry}
+\geometry{left=0.75in,right=0.75in,top=0.75in,bottom=0.75in}
+\parindent = 0.0 in
+\parskip = 0.1 in
+
+
+\def \ParSpace{\vspace{.75em}}
+\def \GroupNumber{17\xspace}
+\def \Class{Operating Systems II\xspace}
+\def \School{Oregon State University\xspace}
+\def \Professor{Kevin McGrath\xspace}
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\newcommand{\NameSigPair}[1]{
+		\par
+		\makebox[2.75in][r]{#1} \hfil 	\makebox[3.25in]{\makebox[2.25in]{\hrulefill} \hfill			
+		\makebox[.75in]{\hrulefill}}
+		\par\vspace{-12pt} \textit{
+			\tiny\noindent
+			\makebox[2.75in]{} \hfil		
+			\makebox[3.25in]{
+				\makebox[2.25in][r]{Signature} \hfill	\makebox[.75in][r]{Date}
+			}
+		}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{titlepage}
+    \pagenumbering{gobble}
+    \begin{singlespace}
+    	\includegraphics[height=4cm]{coe.eps}
+        \hfill  
+        \par\vspace{.2in}
+        \centering
+        \scshape{
+            \vspace{.5in}
+            \textbf{\Huge\Class}\par
+            \large{
+            	\today \\Spring Term
+        	}
+            \vfill
+            {\large Prepared for}\par
+            \huge \School\par
+            \vspace{5pt}
+            {\Large{\Professor}\par}
+            {\large Prepared by }\par
+           % Group\GroupNumber\par
+            \vspace{5pt}
+            {\Large
+                {Austin Row}\par
+                {Lazar Sharipoff}\par
+                {Benjamin Richards}\par
+            }
+            \vspace{20pt}
+        }
+        \begin{abstract}
+			This document describes the steps used by group \GroupNumber to complete Project 2 in which we implemented a LOOK IO Scheduler for the Linux kernel for \Class. 
+			It also answers the questions given in the assignment description regarding the assignment itself.
+        \end{abstract}     
+    \end{singlespace}
+\end{titlepage}
+\newpage
+\pagenumbering{arabic}
+\tableofcontents
+% 7. uncomment this (if applicable). Consider adding a page break.
+%\listoffigures
+%\listoftables
+\clearpage
+
+
+\section{Steps To Setup Environment}
+	Note: This assumes that the files \textbf{yocto\_config}, \textbf{look\_scheduler.patch}, and \textbf{sstf-iosched.c} which were included in this submission have been copied to your home directory on os2.engr.oregonstate.edu.
+	\begin{enumerate}
+		\item
+			SSH on to the OS2 server: \textit{ssh os2.engr.oregonstate.edu. }
+		\item
+			Clone the yocto repo: \textit{git clone git://git.yoctoproject.org/linux-yocto}
+		\item 
+			Change to the correct yocto version with \textit{cd linux-yocto} followed by \textit{checkout v3.19.2}
+		\item 
+			\textit{cp ~/yocto\_config ./.config}
+		\item 
+			\textit{cp ~/look\_scheduler.patch ./}
+		\item 
+			\textit{cp ~/sstf-iosched.c ./block/}
+		\item
+			\textit{git apply look\_scheduler.patch}
+	\end{enumerate}
+
+
+\section{Steps To Build and Run Kernel}
+	\begin{enumerate}
+		\item
+			Split the terminal into two windows using tmux.
+			We will refer to these windows as T1 and T2. 
+		\item
+			T1: \textit{source /scratch/files/environment-setup-i586-poky-linux} \\
+			It will appear that nothing happened, but it actually ran commands to configure the shell so that it’s ready to build the kernel. 
+		\item
+			T1: \textit{make -j4 all} \\
+			This is the command that actually builds the kernel and generates the kernel image that will used to boot the operating system within the VM. 
+			This command will take several minutes. 
+			Wait until it is done before going on to the next step.
+		\item
+			T1: 
+			\textit{qemu-system-i386 -gdb tcp::5517 -S -nographic -kernel ./arch/x86/boot/bzImage -drive file=/scratch/spring2018/17/core-image-lsb-sdk-qemux86.ext4 -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/hda rw console=ttyS0 elevator=look"} \\
+			The terminal should hang now and do nothing. 
+			You have booted the VM using the bzImage file that you generated in the previous step. 
+			The VM’s CPU is halted which is why nothing is happening. 
+			Proceed to the next step.	
+		\item
+			T2: \textit{gdb -tui}
+		\item
+			T2: \textit{target remote :5517} \\
+			This attaches the current GDB process to the process which is running on port 5517 which is the process running the halted VM.
+		\item
+			T2 : \textit{continue} \\
+			Now the VM in T1 will no longer be hanging. 
+			Switch back to T1 and wait for it to ask you to login.
+		\item
+			T1: \textit{root} \\
+			You are now within the VM logged in as the root user and using a kernel that utilizes a LOOK IO Scheduler. 
+	\end{enumerate}
+
+
+\section{Questions About Assignment}
+	\begin{enumerate}
+		\item What do you think the main point of this assignment is? \\
+			%TODO
+		\item How did you personally approach the problem? \\
+			%TODO	
+		\item How did you ensure your solution was correct? \\
+			%TODO
+		\item What did you learn? \\
+			Throughout the course of this assignment we learned:
+			\begin{itemize}
+				\item %TODO
+			\end{itemize}
+		\item How should the TA evaluate your work? \\
+			Running \textit{dmesg $|$ grep "***LOOK\_SCHED"} will show all of the kernel messages printed during the execution of the scheduler.
+			However, there can be a lot of these, so it is recommended that you use some of the following instead:
+			\begin{itemize}
+				\item
+					Show the block positions of the requests queued by the scheduler when there are at least 4 requests in the queue: \textit{dmesg $|$ grep "LOOK\_LONG"}
+				\item 
+					Show the block positions of the requests queued by the scheduler when there are some that are queued in ascending order: \textit{dmesg $|$ grep "LOOK\_ASCENDING"}
+				\item 
+					Show the block positions of the requests queued by the scheduler when there are some that are queued in descending order: \textit{dmesg $|$ grep "LOOK\_DESCENDING"}
+				\item 
+					Show the block positions of the requests queued by the scheduler when there are some that are queued in both ascending and descending order: \textit{dmesg $|$ grep "LOOK\_ASCENDING LOOK\_DESCENDING"}
+				\item
+					Show messages that indicate a front merge was found: \textit{dmesg $|$ grep "Found front merge"}
+				\item 
+					Show when the scan direction switches to UP: \textit{dmesg $|$ grep "Scan direction changed to UP"}
+				\item 
+					Show when the scan direction switches to DOWN: \textit{dmesg $|$ grep "Scan direction changed to DOWN"}
+				\item
+					Show when a request is added to the queue: \textit{dmesg $|$ grep "Adding request for position"}
+			\end{itemize}
+			Correctness can be discerned by the fact that the request positions stored in the queue are always in ascending or descending order with the direction changing at most once within any particular instance of the queue.
+	\end{enumerate}
+
+
+\section{Version Control Log}
+	%TODO
+
+
+\section{Work Log}
+	%TODO
+	\begin{center}
+		\begin{tabular}{ |p{2cm}|p{12cm}| }
+			\hline
+			Date & Work \\
+			\hline
+		\end{tabular}
+	\end{center}
+
+
+\bibdata{}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
