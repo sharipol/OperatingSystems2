@@ -2,10 +2,10 @@
 set -e
 
 #Copy this file into the root directory of your linux-yocto source tree then run it from there.
-port_num=5517
+port_num="$1"
 
-echo "source ../environment-setup-i586-poky-linux"
-source ../environment-setup-i586-poky-linux
+echo "source /scratch/files/environment-setup-i586-poky-linux"
+source /scratch/files/environment-setup-i586-poky-linux
 
 echo "make -j4 all"
 make -j4 all
