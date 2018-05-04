@@ -32,6 +32,8 @@
 \parindent = 0.0 in
 \parskip = 0.1 in
 
+\usepackage{fancyvrb}
+\usepackage{textcomp}
 
 \def \ParSpace{\vspace{.75em}}
 \def \GroupNumber{17\xspace}
@@ -112,12 +114,12 @@
 		\item 
 			Change to the correct yocto version with \textit{cd linux-yocto} followed by \textit{checkout v3.19.2}
 		\item 
-			\textit{cp ~/yocto\_config ./.config}
+			\textit{cp \texttildelow/yocto\_config ./.config}
 		\item 
-			\textit{cp ~/look\_scheduler.patch ./}
+			\textit{cp \texttildelow/look\_scheduler.patch ./}
 		\item 
-			\textit{cp ~/sstf-iosched.c ./block/}
-		\item
+			\textit{cp \texttildelow/sstf-iosched.c ./block/}
+		\item 
 			\textit{git apply look\_scheduler.patch}
 	\end{enumerate}
 
@@ -155,6 +157,59 @@
 			T1: \textit{root} \\
 			You are now within the VM logged in as the root user and using a kernel that utilizes a LOOK IO Scheduler. 
 	\end{enumerate}
+
+\clearpage
+\section{LOOK Algorithm Design}
+	The queue kept by the scheduler can be thought of as two adjacent segments sorted in different directions. 
+	If the scheduler is moving in the UP direction, the first segment will be sorted in ascending order and it will be followed either by nothing or a segment with elements sorted in descending order and vice versa.
+	With this in mind, the algorithm for inserting into the queue comes down to determining which segment to put the new element in and then where in the segment the element should be placed to maintain the segment's ordering.
+	This gives the following algorithm: \\
+
+	Note: iterator.position refers to the position on the disk of the block for the request that iterator points to.
+
+\begin{Verbatim}[commandchars=+\[\]]
++underline[AddRequest(request, queue)]
+if empty(queue):
+	queue.append(request)
+else:
+	iterator = queue.firstElement
+	iteratorNext = iterator.next
+
+	if (iterator.position < request.position AND currectDirection == DOWN)
+		OR
+	   (iterator.position > request.position AND currectDirection == UP):
+
+		//New request does not belong in first segment, 
+		//iterate to right before second segment.
+		while (currectDirection == UP 
+			   AND 
+			   iterator.position < iteratorNext.position)
+			  OR
+			  (currectDirection == DOWN 
+			   AND 
+			   iterator.position > iteratorNext.position):
+				  iterator = iteratorNext
+				  iteratorNext = iterator.next
+
+	//At this point, iterator will be on the first element of 
+	//the first segment if the new request belongs there
+	//or it will be on the element before the first of the second 
+	//segment if that's where it belongs.
+
+
+	//While we haven't reached the last element and the new request 
+	//belongs after iteratorNext in the segment
+	while iterator != queue.lastElement
+		  AND
+		  (iterator.position < iteratorNext.position) == 
+		  (iteratorNext.position < request.position)
+			iterator = iteratorNext
+			iteratorNext = iterator.next
+
+	//At this point iterator points to the element after 
+	//which the new request should be placed
+	Add request to queue after iterator
+\end{Verbatim}
 
 
 \section{Questions About Assignment}
@@ -217,18 +272,22 @@
 	\end{enumerate}
 
 
-\section{LOOK Algorithm Design}
-	%TODO
 \section{Version Control Log}
-	%TODO
+\begin{tabular}{|p{5cm}|p{5cm}|p{5cm}|}
+\hline
+\textbf{Commit} & \textbf{Author} & \textbf{Description}\\
+\hline
+\textcolor{blue}{\underline{\href[pdfnewwindow=true]{https://github.com/AustinRow1/OperatingSystems2/commit/fad3a1690038d1785a07071dea724c7fa74d0846}{fad3a16}}} & AustinRow1 & Implemented look scheduler for yocto.\\\hline
+\textcolor{blue}{\underline{\href[pdfnewwindow=true]{https://github.com/AustinRow1/OperatingSystems2/commit/0e9906640572cc0be52dbe039061e91fa5622da1}{0e99066}}} & AustinRow1 & Created patch file, deleted unneccessary files.\\\hline
+\textcolor{blue}{\underline{\href[pdfnewwindow=true]{https://github.com/AustinRow1/OperatingSystems2/commit/a98b7c18aa474b141b50f364620e2b76a3790157}{a98b7c1}}} & AustinRow1 & Started writeup for look scheduler assignment and added look scheduler source file to assignment directory.\\\hline
+\textcolor{blue}{\underline{\href[pdfnewwindow=true]{https://github.com/AustinRow1/OperatingSystems2/commit/297ac1df3960a66e565b1b62f6dfe6fcc8adce48}{297ac1d}}} & AustinRow1 & Completed general assignment questions section of look\_scheduler.tex\\\hline\end{tabular}
 
 
 \section{Work Log}
-	%TODO
 	\begin{center}
 		\begin{tabular}{ |p{2cm}|p{12cm}| }
 			\hline
-			Date & Work \\
+			5/3/2018 & Did the entire assignment including learning about io schedulers \cite{io-schedulers}, learning what the LOOK algorithm was \cite{look-algorithm}, and implementing it with the help of the kernel API source \cite{kernel-api-source} and the kernel linked list documentation \cite{kernel-list-doc}. \\
 			\hline
 		\end{tabular}
 	\end{center}
