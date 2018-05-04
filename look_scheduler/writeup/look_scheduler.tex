@@ -160,15 +160,37 @@
 \section{Questions About Assignment}
 	\begin{enumerate}
 		\item What do you think the main point of this assignment is? \\
-			%TODO
+			The main point of this assignment is to learn what IO Schedulers are, what responsibilities they have, and in what ways they can differ.
+			These topics are explored via a hands on approach where we are forced to learn if we want to create a functioning scheduler of our own.
 		\item How did you personally approach the problem? \\
-			%TODO	
+			The first step that we took in completing the assignment was to learn about the different responsibilities of the IO scheduler in the Linux kernel.
+			We had to first know what functionality we were looking to implement before we could begin to think about how to implement it.
+			Next we looked at how the other existing schedulers were implemented.
+			This helped us understand what common components every scheduler should have as well as what implementation patterns should be followed while implementing ours.
+			After looking at each scheduler, we copied the source for the noop scheduler to use as a basis for the look scheduler. 
+			At this point we knew that we needed to change the data that the scheduler was keeping track of (e.g. the look scheduler needs to know what direction it is moving in) as well as how it handled adding and merging requests.
+			We began by changing how the scheduler added requests to its queue since that is the core of what defines a scheduler.
+			After changing the implementation of the function to add requests to one that used the LOOK algorithm, we implemented front merges for merging requests.
 		\item How did you ensure your solution was correct? \\
-			%TODO
+			Kernel print statements were put after each addition or dispatch of a request which displayed the positions of each of the requests in the scheduler's queue as well as after each merge that occured.
+			This allowed us to look at the kernel message log and determine that the queue was changing as one would expect while using a scheduler based on the LOOK algorithm.
 		\item What did you learn? \\
 			Throughout the course of this assignment we learned:
 			\begin{itemize}
-				\item %TODO
+				\item
+					That schedulers are responsible for deciding in which order requests to disk should be added to the dispatch queue.
+				\item
+					That schedulers are responsible for implementing the merging of requests that are in adjacent blocks on disk.
+				\item 
+					That the primary difference between schedulers is how they determine the order in which requests should be added to the dispatch queue.
+				\item
+					How to use the API for kernel lists.
+				\item
+					How to change what scheduler the kernel uses.
+				\item
+					How to view kernel log messages and the different priority levels for these messages.
+				\item
+					How to change what log message levels are printed to the console.
 			\end{itemize}
 		\item How should the TA evaluate your work? \\
 			Running \textit{dmesg $|$ grep "***LOOK\_SCHED"} will show all of the kernel messages printed during the execution of the scheduler.
@@ -195,6 +217,8 @@
 	\end{enumerate}
 
 
+\section{LOOK Algorithm Design}
+	%TODO
 \section{Version Control Log}
 	%TODO
 
