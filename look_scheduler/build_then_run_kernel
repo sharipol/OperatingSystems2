@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+
+#Copy this file into the root directory of your linux-yocto source tree then run it from there.
+port_num="$1"
+
+echo "source /scratch/files/environment-setup-i586-poky-linux"
+source /scratch/files/environment-setup-i586-poky-linux
+
+echo "make -j4 all"
+make -j4 all
+
+echo "Starting up VM with kernel..."
+echo -e "\n******************************************************************"
+echo "Go to separate terminal window and run the following commands: "
+echo -e "\tgdb -tui"
+echo -e "\ttarget remote :$port_num"
+echo -e "\tcontinue"
+echo -e "******************************************************************\n"
+
+#echo "qemu-system-i386 -gdb tcp::$port_num -S -nographic -kernel ./arch/x86/boot/bzImage -drive file=../core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append \"root=/dev/vda rw console=ttyS0 debug\""
+echo "qemu-system-i386 -gdb tcp::$port_num -S -nographic -kernel ./arch/x86/boot/bzImage -drive file=/scratch/spring2018/17/core-image-lsb-sdk-qemux86.ext4 -enable-kvm -net none -usb -localtime --no-reboot --append \"root=/dev/hda rw console=ttyS0 elevator=look\""
+
+#Comment out the line below if you only want to build the kernel but not run it in the VM.
+qemu-system-i386 -gdb tcp::$port_num -S -nographic -kernel ./arch/x86/boot/bzImage -drive file=/scratch/spring2018/17/core-image-lsb-sdk-qemux86.ext4 -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/hda rw console=ttyS0 elevator=look"
